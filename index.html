@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Artists wählen – YouTube Skip Player</title>
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; background: #000; color: #fff; }
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: url('https://img.youtube.com/vi/xFB_Cduys8E/maxresdefault.jpg') center center / cover no-repeat #000;
+      color: #fff;
+    }
     label { display: block; margin-bottom: 5px; }
     .controls { margin-top: 20px; }
     #player {
@@ -23,11 +30,14 @@
   <h1>Artists auswählen</h1>
   <div class="controls">
     <button type="button" onclick="deselectAll()">Alle abwählen</button>
-    <button type="button" onclick="startPlayback()">Abspielen</button>
   </div>
   <form id="artistForm">
     <div id="checkboxes"></div>
   </form>
+
+  <div class="controls">
+    <button type="button" onclick="startPlayback()">Abspielen</button>
+  </div>
 
   <div id="player"></div>
 
@@ -50,7 +60,7 @@
       ["HAKAN.BOZ", 1066]
     ];
 
-    const SEGMENT_LENGTH = 19;
+    const SEGMENT_LENGTH = 20;
 
     const checkboxesDiv = document.getElementById('checkboxes');
     artists.forEach(([name], i) => {
@@ -135,3 +145,4 @@
   </script>
 </body>
 </html>
+
