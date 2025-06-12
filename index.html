@@ -75,7 +75,8 @@
     const SEGMENT_LENGTH = 20;
 
     const checkboxesDiv = document.getElementById('checkboxes');
-    artists.forEach(([name, i]) => {
+    artists.forEach((artist, i) => {
+      const name = artist[0];
       const id = `artist-${i}`;
       checkboxesDiv.innerHTML += `<label><input type="checkbox" id="${id}" checked> ${name}</label>`;
     });
@@ -157,5 +158,3 @@
   </script>
 </body>
 </html>
-
-
