@@ -93,28 +93,30 @@
         return;
       }
 
+      const segments = selectedIndexes.map((idx, i) => {
+        const start = artists[idx][1];
+        const end = selectedIndexes[i + 1] !== undefined ? artists[selectedIndexes[i + 1]][1] : 1086;
+        return { start, end, label: artists[idx][0] };
+      });
+
       currentIndex = 0;
 
-      function playNext() {
-        if (currentIndex >= selectedIndexes.length) return;
+      function playSegment() {
+        if (currentIndex >= segments.length) return;
 
-        const idx = selectedIndexes[currentIndex];
-        const startTime = artists[idx][1];
-        const nextIdx = selectedIndexes[currentIndex + 1];
-        const endTime = nextIdx !== undefined ? artists[nextIdx][1] : 1086; // letzter Timestamp + 20s fallback
-
-        console.log("Springe zu:", artists[idx][0], startTime, "bis", endTime);
-        player.seekTo(startTime, true);
+        const { start, end, label } = segments[currentIndex];
+        console.log("Springe zu:", label, start, "bis", end);
+        player.seekTo(start, true);
         player.playVideo();
 
-        const duration = (endTime - startTime) * 1000;
+        const duration = (end - start) * 1000;
         setTimeout(() => {
           currentIndex++;
-          playNext();
+          playSegment();
         }, duration);
       }
 
-      playNext();
+      playSegment();
     }
 
     function deselectAll() {
