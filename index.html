@@ -76,6 +76,7 @@
         }
       });
     }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
     function startPlayback() {
       if (!isPlayerReady) {
@@ -99,19 +100,18 @@
 
         const idx = selectedIndexes[currentIndex];
         const startTime = artists[idx][1];
-        const endTime = selectedIndexes[currentIndex + 1] !== undefined
-          ? artists[selectedIndexes[currentIndex + 1]][1]
-          : startTime + 20;
+        const nextIdx = selectedIndexes[currentIndex + 1];
+        const endTime = nextIdx !== undefined ? artists[nextIdx][1] : 1086; // letzter Timestamp + 20s fallback
 
         console.log("Springe zu:", artists[idx][0], startTime, "bis", endTime);
         player.seekTo(startTime, true);
         player.playVideo();
 
+        const duration = (endTime - startTime) * 1000;
         setTimeout(() => {
-          player.pauseVideo();
           currentIndex++;
           playNext();
-        }, (endTime - startTime) * 1000);
+        }, duration);
       }
 
       playNext();
@@ -127,11 +127,6 @@
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
   </script>
 </body>
 </html>
-
-
-
-
