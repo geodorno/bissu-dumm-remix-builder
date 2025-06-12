@@ -56,9 +56,10 @@
       checkboxesDiv.innerHTML += `<label><input type="checkbox" id="${id}" checked> ${name}</label>`;
     });
 
-    let currentIndex = 0;
     let player;
     let isPlayerReady = false;
+    let segments = [];
+    let currentSegmentIndex = 0;
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
@@ -69,7 +70,8 @@
           'onReady': () => {
             isPlayerReady = true;
             console.log("YouTube Player ist bereit.");
-          }
+          },
+          'onStateChange': onPlayerStateChange
         },
         playerVars: {
           enablejsapi: 1
@@ -93,30 +95,37 @@
         return;
       }
 
-      const segments = selectedIndexes.map((idx, i) => {
+      segments = selectedIndexes.map((idx, i) => {
         const start = artists[idx][1];
         const end = selectedIndexes[i + 1] !== undefined ? artists[selectedIndexes[i + 1]][1] : 1086;
         return { start, end, label: artists[idx][0] };
       });
 
-      currentIndex = 0;
+      currentSegmentIndex = 0;
+      playCurrentSegment();
+    }
 
-      function playSegment() {
-        if (currentIndex >= segments.length) return;
+    function playCurrentSegment() {
+      if (currentSegmentIndex >= segments.length) return;
+      const segment = segments[currentSegmentIndex];
+      console.log("Spiele:", segment.label, segment.start, "bis", segment.end);
+      player.seekTo(segment.start);
+      player.playVideo();
+    }
 
-        const { start, end, label } = segments[currentIndex];
-        console.log("Springe zu:", label, start, "bis", end);
-        player.seekTo(start, true);
-        player.playVideo();
-
-        const duration = (end - start) * 1000;
-        setTimeout(() => {
-          currentIndex++;
-          playSegment();
-        }, duration);
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING && segments.length > 0) {
+        const segment = segments[currentSegmentIndex];
+        clearInterval(player._checkInterval);
+        player._checkInterval = setInterval(() => {
+          const currentTime = player.getCurrentTime();
+          if (currentTime >= segment.end) {
+            clearInterval(player._checkInterval);
+            currentSegmentIndex++;
+            playCurrentSegment();
+          }
+        }, 500);
       }
-
-      playSegment();
     }
 
     function deselectAll() {
