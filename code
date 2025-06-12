@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artists wählen – YouTube Skip Player</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }
+    label { display: block; margin-bottom: 5px; }
+    .controls { margin-top: 20px; }
+    iframe { display: block; margin: 2rem auto; width: 100%; max-width: 720px; height: 405px; }
+    .controls button { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Artists auswählen</h1>
+  <form id="artistForm">
+    <div id="checkboxes"></div>
+    <div class="controls">
+      <button type="button" onclick="startPlayback()">Abspielen</button>
+      <button type="button" onclick="deselectAll()">Alle abwählen</button>
+    </div>
+  </form>
+
+  <div id="player"></div>
+
+  <script>
+    const artists = [
+      ["Die P", 12], ["MP", 32], ["JAILL", 52], ["VEGA", 72], ["SIDO", 93],
+      ["JUJU", 112], ["BONEZ (HOOK)", 133], ["CANEY030", 153], ["ENO", 174],
+      ["DARDAN", 194], ["AZAD", 214], ["OLEXESH", 235], ["ZINED", 255],
+      ["BONEZ (HOOK)", 274], ["HAZE", 294], ["MAKKO", 314], ["KWAM.E", 336],
+      ["BONEZ PART", 355], ["LX", 375], ["BONEZ (HOOK)", 396], ["SKI AGGU", 415],
+      ["CELO", 437], ["ABDI", 446], ["NATE57", 456], ["KOLJA GOLDSTEIN", 477],
+      ["SALIOU", 497], ["FRAUENARZT", 517], ["BONEZ (HOOK)", 537],
+      ["AK AUSSERKONTROLLE", 557], ["NIZI19", 577], ["SAMRA", 598], ["SA4", 618],
+      ["BIG TOE", 638], ["KONTRA K", 658], ["BONEZ (HOOK)", 679],
+      ["CURSE", 698], ["LAAS", 719], ["CRACKAVELI", 739], ["REEPERBAHN KAREEM", 760],
+      ["JAN DELAY", 780], ["FiNCH", 799], ["BONEZ (HOOK)", 820],
+      ["SILVA", 840], ["ACHTVIER", 860], ["KAISA NATRON", 880], ["VEYSEL", 901],
+      ["SIL3A", 921], ["JONESMANN", 941], ["BONEZ (HOOK)", 962],
+      ["TOM HENGST", 981], ["AK33", 1001], ["OTW", 1024], ["MASSIV", 1045],
+      ["HAKAN.BOZ", 1066]
+    ];
+
+    const checkboxesDiv = document.getElementById('checkboxes');
+    artists.forEach(([name], i) => {
+      const id = `artist-${i}`;
+      checkboxesDiv.innerHTML += `<label><input type="checkbox" id="${id}" checked> ${name}</label>`;
+    });
+
+    let currentIndex = 0;
+    let player;
+    let isPlayerReady = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '405',
+        width: '720',
+        videoId: 'xFB_Cduys8E',
+        events: {
+          'onReady': () => {
+            isPlayerReady = true;
+          }
+        },
+        playerVars: {
+          enablejsapi: 1
+        }
+      });
+    }
+
+    function startPlayback() {
+      if (!isPlayerReady) {
+        alert("Bitte warte, bis der Player geladen ist.");
+        return;
+      }
+
+      const selectedIndexes = artists
+        .map((_, i) => document.getElementById(`artist-${i}`).checked ? i : null)
+        .filter(i => i !== null);
+
+      if (selectedIndexes.length === 0) {
+        alert("Bitte wähle mindestens einen Artist aus.");
+        return;
+      }
+
+      currentIndex = 0;
+
+      function playNext() {
+        if (currentIndex >= selectedIndexes.length) return;
+
+        const idx = selectedIndexes[currentIndex];
+        const startTime = artists[idx][1];
+        const endTime = selectedIndexes[currentIndex + 1] !== undefined
+          ? artists[selectedIndexes[currentIndex + 1]][1]
+          : startTime + 20;
+
+        player.seekTo(startTime, true);
+        player.playVideo();
+
+        setTimeout(() => {
+          player.pauseVideo();
+          currentIndex++;
+          playNext();
+        }, (endTime - startTime) * 1000);
+      }
+
+      playNext();
+    }
+
+    function deselectAll() {
+      artists.forEach((_, i) => {
+        const checkbox = document.getElementById(`artist-${i}`);
+        if (checkbox) checkbox.checked = false;
+      });
+    }
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  </script>
+</body>
+</html>
+
+
+
