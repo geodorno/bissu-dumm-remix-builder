@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artists wählen – YouTube Skip Player</title>
+  <title>bissu dumm? Remix Generator</title>
   <style>
     body {
       font-family: sans-serif;
@@ -13,8 +13,17 @@
       background: url('https://img.youtube.com/vi/xFB_Cduys8E/maxresdefault.jpg') center center / cover no-repeat #000;
       color: #fff;
     }
-    label { display: block; margin-bottom: 5px; }
-    .controls { margin-top: 20px; }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      text-shadow: 1px 1px 4px #000;
+    }
+    h1, h2, button {
+      text-shadow: 2px 2px 5px #000;
+    }
+    .controls {
+      margin-top: 20px;
+    }
     #player {
       display: block;
       margin: 2rem auto;
@@ -23,11 +32,14 @@
       height: 405px;
       background: url('https://img.youtube.com/vi/xFB_Cduys8E/maxresdefault.jpg') center center / cover no-repeat;
     }
-    .controls button { margin-right: 10px; }
+    .controls button {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Artists auswählen</h1>
+  <h1>bissu dumm? Remix Generator</h1>
+  <h2>Features auswählen</h2>
   <div class="controls">
     <button type="button" onclick="deselectAll()">Alle abwählen</button>
   </div>
@@ -63,7 +75,7 @@
     const SEGMENT_LENGTH = 20;
 
     const checkboxesDiv = document.getElementById('checkboxes');
-    artists.forEach(([name], i) => {
+    artists.forEach(([name, i]) => {
       const id = `artist-${i}`;
       checkboxesDiv.innerHTML += `<label><input type="checkbox" id="${id}" checked> ${name}</label>`;
     });
@@ -145,4 +157,5 @@
   </script>
 </body>
 </html>
+
 
